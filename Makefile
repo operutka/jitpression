@@ -15,6 +15,7 @@ OBJS=	build/argtable.o \
 		build/interpreter.o \
 		build/exp_optimizer.o \
 		build/exp_derivator.o \
+		build/exp_printer.o \
 		build/operand.o \
 		build/operator.o \
 		build/parser.o \
@@ -29,6 +30,7 @@ HS=		argtable.h \
 		interpreter.h \
 		exp_optimizer.h \
 		exp_derivator.h \
+		exp_printer.h \
 		operand.h \
 		operator.h \
 		opvisitor.h \
@@ -67,6 +69,9 @@ build/exp_optimizer.o: exp_optimizer.cpp
 	${CPP} ${CFLAGS} -o $@ -c $< ${INCLUDE}
 
 build/exp_derivator.o: exp_derivator.cpp
+	${CPP} ${CFLAGS} -o $@ -c $< ${INCLUDE}
+	
+build/exp_printer.o: exp_printer.cpp
 	${CPP} ${CFLAGS} -o $@ -c $< ${INCLUDE}
 
 build/operand.o: operand.cpp
