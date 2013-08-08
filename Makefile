@@ -1,15 +1,20 @@
-CC=gcc
-CPP=g++
-CFLAGS=-m64 -Wall -Wno-long-long -pedantic -std=c++11 -O3 -g
-CLIBS=-fopenmp
+CC=clang
+CPP=clang++
+LLVM_FLAGS=`llvm-config --cppflags`
+LLVM_LIBS=`llvm-config --ldflags --libs core jit native`
+CFLAGS=-Wall -Wno-long-long -pedantic -std=c++11 -O3 -g ${LLVM_FLAGS}
+CLIBS=-fopenmp ${LLVM_LIBS}
 MKDIR=mkdir -p
 RM=rm -rf
 
 OBJS=	build/argtable.o \
-		build/compiler.o \
+		build/x86_64_compiler.o \
+		build/llvm_compiler.o \
 		build/expression.o \
 		build/function.o \
 		build/interpreter.o \
+		build/exp_optimizer.o \
+		build/exp_derivator.o \
 		build/operand.o \
 		build/operator.o \
 		build/parser.o \
@@ -17,10 +22,13 @@ OBJS=	build/argtable.o \
 		build/tokenizer.o \
 		build/test.o
 HS=		argtable.h \
-		compiler.h \
+		x86_64_compiler.h \
+		llvm_compiler.h \
 		expression.h \
 		function.h \
 		interpreter.h \
+		exp_optimizer.h \
+		exp_derivator.h \
 		operand.h \
 		operator.h \
 		opvisitor.h \
@@ -38,37 +46,46 @@ link: ${OBJS}
 	${CPP} ${CFLAGS} ${OBJS} -o ${OUT_FILE} ${CLIBS}
 
 build/argtable.o: argtable.cpp
-	${CPP} ${CFLAGS} -o $@ -c $< ${CLIBS} ${INCLUDE}
+	${CPP} ${CFLAGS} -o $@ -c $< ${INCLUDE}
 
-build/compiler.o: compiler.cpp
-	${CPP} ${CFLAGS} -o $@ -c $< ${CLIBS} ${INCLUDE}
+build/x86_64_compiler.o: x86_64_compiler.cpp
+	${CPP} ${CFLAGS} -o $@ -c $< ${INCLUDE}
+
+build/llvm_compiler.o: llvm_compiler.cpp
+	${CPP} ${CFLAGS} -o $@ -c $< ${INCLUDE}
 
 build/expression.o: expression.cpp
-	${CPP} ${CFLAGS} -o $@ -c $< ${CLIBS} ${INCLUDE}
+	${CPP} ${CFLAGS} -o $@ -c $< ${INCLUDE}
 
 build/function.o: function.cpp
-	${CPP} ${CFLAGS} -o $@ -c $< ${CLIBS} ${INCLUDE}
+	${CPP} ${CFLAGS} -o $@ -c $< ${INCLUDE}
 
 build/interpreter.o: interpreter.cpp
-	${CPP} ${CFLAGS} -o $@ -c $< ${CLIBS} ${INCLUDE}
+	${CPP} ${CFLAGS} -o $@ -c $< ${INCLUDE}
+
+build/exp_optimizer.o: exp_optimizer.cpp
+	${CPP} ${CFLAGS} -o $@ -c $< ${INCLUDE}
+
+build/exp_derivator.o: exp_derivator.cpp
+	${CPP} ${CFLAGS} -o $@ -c $< ${INCLUDE}
 
 build/operand.o: operand.cpp
-	${CPP} ${CFLAGS} -o $@ -c $< ${CLIBS} ${INCLUDE}
+	${CPP} ${CFLAGS} -o $@ -c $< ${INCLUDE}
 
 build/operator.o: operator.cpp
-	${CPP} ${CFLAGS} -o $@ -c $< ${CLIBS} ${INCLUDE}
+	${CPP} ${CFLAGS} -o $@ -c $< ${INCLUDE}
 
 build/parser.o: parser.cpp
-	${CPP} ${CFLAGS} -o $@ -c $< ${CLIBS} ${INCLUDE}
+	${CPP} ${CFLAGS} -o $@ -c $< ${INCLUDE}
 
 build/token.o: token.cpp
-	${CPP} ${CFLAGS} -o $@ -c $< ${CLIBS} ${INCLUDE}
+	${CPP} ${CFLAGS} -o $@ -c $< ${INCLUDE}
 
 build/tokenizer.o: tokenizer.cpp
-	${CPP} ${CFLAGS} -o $@ -c $< ${CLIBS} ${INCLUDE}
+	${CPP} ${CFLAGS} -o $@ -c $< ${INCLUDE}
 
 build/test.o: test.cpp
-	${CPP} ${CFLAGS} -o $@ -c $< ${CLIBS} ${INCLUDE}
+	${CPP} ${CFLAGS} -o $@ -c $< ${INCLUDE}
 	
 clean:
 	${RM} build dist

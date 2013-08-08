@@ -36,9 +36,8 @@ public:
     const argtable* get_arguments() const;
     
     static function parse(const char* exp);
-    static function parse(const char* exp, bool compile);
+    static function parse(const char* exp, compiler *comp);
 private:
-    static compiler comp;
     static interpreter intp;
     
     int (*addr)(int* args);

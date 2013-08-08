@@ -22,6 +22,7 @@
 #include <omp.h>
 
 #include "function.h"
+#include "llvm_compiler.h"
 
 int main() {
     char line[4096];
@@ -30,8 +31,9 @@ int main() {
         printf("Enter an expression:\n");
         fgets(line, 4095, stdin);
 
-        function fi = function::parse(line, false);
-        function fc = function::parse(line, true);
+        llvm_compiler compiler;
+        function fi = function::parse(line);
+        function fc = function::parse(line, &compiler);
         const argtable* at = fi.get_arguments();
 
         int* args = new int[at->get_argument_count()];

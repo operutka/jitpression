@@ -19,16 +19,14 @@
 
 #include "function.h"
 #include "parser.h"
-#include "compiler.h"
 
-compiler function::comp;
 interpreter function::intp;
 
 function::function(expression& exp, int (*addr)(int*)) : exp(exp) {
     this->addr = addr;
 }
 
-function::function(const function& orig) : exp(exp) {
+function::function(const function& orig) : exp(orig.exp) {
     this->addr = orig.addr;
 }
 
@@ -47,14 +45,16 @@ const argtable* function::get_arguments() const {
 }
 
 function function::parse(const char* exp) {
-    return parse(exp, true);
+    expression* e = parser::parse(exp);
+    function result(*e, NULL);
+    delete e;
+    
+    return result;
 }
     
-function function::parse(const char* exp, bool compile) {
+function function::parse(const char* exp, compiler* comp) {
     expression* e = parser::parse(exp);
-    int (*code)(int*) = NULL;
-    if (compile)
-        code = (int(*)(int*))comp.compile(e);
+    int (*code)(int*) = (int(*)(int*))comp->compile(e);
     
     function result(*e, code);
     delete e;

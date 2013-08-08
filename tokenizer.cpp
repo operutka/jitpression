@@ -182,8 +182,6 @@ void tokenizer::skip_white_space() {
 }
     
 char* tokenizer::substring(const char* string, size_t start, size_t length) {
-    if (length < 0)
-        length = 0;
     if (length >= temp_string_size) {
         delete [] temp_string;
         temp_string = new char[2 * length];
