@@ -15,7 +15,7 @@ It supports following features:
 
 Compilation
 -----------
-You need GCC C++ compiler and make tool, there is no special dependency. To build Jitpression just type "make" into your 
+You need LLVM clang compiler, make tool and LLVM libraries for JIT compiling. To build Jitpression just type "make" into your 
 command line. Simple test application is available in the "dist" subdir after compilation.
 
 Testing
