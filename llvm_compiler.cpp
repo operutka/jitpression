@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) 2013 Ondrej Perutka
+ * 
+ * This file is part of Jitpression.
+ * 
+ * Jitpression is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Jitpression is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Jitpression.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "llvm_compiler.h"
 
 #include <cstdlib>
@@ -7,6 +26,8 @@
 #include <llvm/Analysis/Verifier.h>
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/Module.h>
+
+using namespace jitpression;
 
 llvm_compiler::llvm_compiler() {
     llvm::InitializeNativeTarget();
@@ -94,6 +115,10 @@ void llvm_compiler::compvisitor::visit(const divop* op) {
     llvm::Value* r = llvm_value;
     
     llvm_value = llvm_builder.CreateSDiv(l, r, "tmpdiv");
+}
+
+void llvm_compiler::compvisitor::visit(const functor* op) {
+    throw "not supported yet";
 }
 
 void llvm_compiler::compvisitor::visit(const expression* op) {

@@ -27,6 +27,8 @@
 #include "expression.h"
 #include "argtable.h"
 
+using namespace jitpression;
+
 x86_64_compiler::x86_64_compiler() {
     buffer_size = DEFAULT_BUF_SIZE;
     buffer = new unsigned char[DEFAULT_BUF_SIZE];
@@ -502,6 +504,10 @@ void x86_64_compiler::compvisitor::visit(const divop* op) {
     
     dst_reg = old_dst;
     tmp_reg = old_tmp;
+}
+
+void x86_64_compiler::compvisitor::visit(const functor* op) {
+    throw "not supported";
 }
 
 void x86_64_compiler::compvisitor::visit(const expression* op) {

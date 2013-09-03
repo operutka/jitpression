@@ -17,42 +17,42 @@
  * along with Jitpression.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "expression.h"
-#include "opvisitor.h"
+#include "context.h"
+#include "function.h"
+#include "llvm_compiler.h"
 
 using namespace jitpression;
 
-expression::expression(const argtable& args, operand* op) : args(args) {
-    this->op = op;
+context::context() {
+    comp = new llvm_compiler();
+    free_compiler = true;
 }
 
-expression::expression(const expression& orig) : args(orig.args) {
-    this->op = orig.op->clone();
+context::context(compiler* comp) {
+    this->comp = comp;
+    this->free_compiler = false;
 }
 
-expression::~expression() {
-    delete op;
+context::~context() {
+    if (free_compiler)
+        delete comp;
 }
 
-expression& expression::operator=(const expression& other) {
-    delete op;
-    op = other.op->clone();
-    args = other.args;
-    return *this;
+void context::register_function(const char* name, const function* f) {
+    if (function_map.count(name) > 0)
+        throw "a function with the given name is already defined";
+    
+    function_map[name] = f;
 }
 
-expression* expression::clone() const {
-    return new expression(*this);
+void context::remove_function(const char* name) {
+    function_map.erase(name);
 }
 
-void expression::visit(opvisitor* visitor) const {
-    visitor->visit(this);
+const function* context::get_function(const char* name) const {
+    return function_map.at(name);
 }
 
-const operand* expression::get_top_operand() const {
-    return op;
-}
-
-const argtable* expression::get_arguments() const {
-    return &args;
+compiler* context::get_compiler() {
+    return comp;
 }

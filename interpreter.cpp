@@ -19,6 +19,8 @@
 
 #include "interpreter.h"
 
+using namespace jitpression;
+
 interpreter::interpreter() {
 }
 
@@ -78,6 +80,10 @@ void interpreter::intvisitor::visit(const divop* op) {
     int left = result;
     op->get_right()->visit(this);
     result = left / result;
+}
+
+void interpreter::intvisitor::visit(const functor* op) {
+    throw "not supported yet";
 }
 
 void interpreter::intvisitor::visit(const expression* op) {

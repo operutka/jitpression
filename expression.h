@@ -22,24 +22,29 @@
 
 #include "argtable.h"
 
-class opvisitor;
-class operand;
+namespace jitpression {
 
-class expression {
-public:
-    expression(const argtable& args, operand* top);
-    expression(const expression& orig);
-    virtual ~expression();
-    
-    expression& operator=(const expression& other);
-    
-    virtual void visit(opvisitor* visitor) const;
-    const operand* get_top_operand() const;
-    const argtable* get_arguments() const;
-private:
-    argtable args;
-    operand* op;
-};
+    class opvisitor;
+    class operand;
+
+    class expression {
+    public:
+        expression(const argtable& args, operand* top);
+        expression(const expression& orig);
+        virtual ~expression();
+
+        expression& operator=(const expression& other);
+        expression* clone() const;
+
+        virtual void visit(opvisitor* visitor) const;
+        const operand* get_top_operand() const;
+        const argtable* get_arguments() const;
+    private:
+        argtable args;
+        operand* op;
+    };
+
+}
 
 #endif	/* EXPRESSION_H */
 

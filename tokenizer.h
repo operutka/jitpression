@@ -24,38 +24,42 @@
 
 #define DEFAULT_TEMP_STRING_SIZE        256
 
-class tokenizer {
-public:
-    tokenizer(const char* input);
-    tokenizer(const char* input, size_t offset, size_t length);
-    virtual ~tokenizer();
-    bool has_next() const;
-    const token next();
-private:
-    const char* input;
-    size_t input_offset;
-    size_t input_length;
-    
-    token current_token;
-    char *temp_string;
-    size_t temp_string_size;
-    
-    void init(const char* input, size_t offset, size_t length);
-    
-    void next_number();
-    void next_octal_number();
-    void next_hex_number();
-    void next_decimal_number();
-    void next_symbol(int symbol, int symbol_width);
-    void next_identifier();
-    
-    bool is_symbol(char c) const;
-    bool is_white_space(char c) const;
-    
-    void skip_white_space();
-    
-    char* substring(const char* string, size_t start, size_t length);
-};
+namespace jitpression {
+
+    class tokenizer {
+    public:
+        tokenizer(const char* input);
+        tokenizer(const char* input, size_t offset, size_t length);
+        virtual ~tokenizer();
+        bool has_next() const;
+        const token next();
+    private:
+        const char* input;
+        size_t input_offset;
+        size_t input_length;
+
+        token current_token;
+        char *temp_string;
+        size_t temp_string_size;
+
+        void init(const char* input, size_t offset, size_t length);
+
+        void next_number();
+        void next_octal_number();
+        void next_hex_number();
+        void next_decimal_number();
+        void next_symbol(int type, int symbol_width);
+        void next_identifier();
+
+        bool is_symbol(char c) const;
+        bool is_white_space(char c) const;
+
+        void skip_white_space();
+
+        char* substring(const char* string, size_t start, size_t length);
+    };
+
+}
 
 #endif	/* TOKENIZER_H */
 

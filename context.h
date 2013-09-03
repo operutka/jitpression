@@ -17,35 +17,36 @@
  * along with Jitpression.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EXP_PRINTER_H
-#define	EXP_PRINTER_H
+#ifndef CONTEXT_H
+#define	CONTEXT_H
 
-#include "opvisitor.h"
+#include <map>
+#include <string>
 
-#include <cstdio>
+#include "compiler.h"
 
 namespace jitpression {
+    
+    class function;
 
-    class exp_printer : public opvisitor {
+    class context {
     public:
-        exp_printer();
-        exp_printer(FILE* out);
-
-        virtual void visit(const numoperand* op);
-        virtual void visit(const symoperand* op);
-        virtual void visit(const invop* op);
-        virtual void visit(const addop* op);
-        virtual void visit(const subop* op);
-        virtual void visit(const mulop* op);
-        virtual void visit(const divop* op);
-        virtual void visit(const functor* op);
-        virtual void visit(const expression* op);
-
+        context();
+        context(compiler* comp);
+        virtual ~context();
+        
+        void register_function(const char* name, const function* f);
+        void remove_function(const char* name);
+        const function* get_function(const char* name) const;
+        
+        compiler* get_compiler();
     private:
-        FILE* stream;
+        std::map<std::string,const function*> function_map;
+        compiler *comp;
+        bool free_compiler;
     };
 
 }
 
-#endif	/* EXP_PRINTER_H */
+#endif	/* CONTEXT_H */
 

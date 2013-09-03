@@ -22,36 +22,41 @@
 
 #include "opvisitor.h"
 
-class expression;
+namespace jitpression {
 
-class interpreter {
-public:
-    interpreter();
-    virtual ~interpreter();
-    
-    int evaluate(const expression* exp, const int* arguments) const;
-private:
+    class expression;
 
-    class intvisitor : public opvisitor {
+    class interpreter {
     public:
-        intvisitor(const int* arguments);
-        virtual ~intvisitor();
+        interpreter();
+        virtual ~interpreter();
 
-        virtual void visit(const numoperand* op);
-        virtual void visit(const symoperand* op);
-        virtual void visit(const invop* op);
-        virtual void visit(const addop* op);
-        virtual void visit(const subop* op);
-        virtual void visit(const mulop* op);
-        virtual void visit(const divop* op);
-        virtual void visit(const expression* op);
-        
-        int get_result() const;
+        int evaluate(const expression* exp, const int* arguments) const;
     private:
-        const int *arguments;
-        int result;
+
+        class intvisitor : public opvisitor {
+        public:
+            intvisitor(const int* arguments);
+            virtual ~intvisitor();
+
+            virtual void visit(const numoperand* op);
+            virtual void visit(const symoperand* op);
+            virtual void visit(const invop* op);
+            virtual void visit(const addop* op);
+            virtual void visit(const subop* op);
+            virtual void visit(const mulop* op);
+            virtual void visit(const divop* op);
+            virtual void visit(const functor* op);
+            virtual void visit(const expression* op);
+
+            int get_result() const;
+        private:
+            const int *arguments;
+            int result;
+        };
     };
-};
+
+}
 
 #endif	/* INTERPRETER_H */
 

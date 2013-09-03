@@ -23,19 +23,23 @@
 #include <string>
 #include <vector>
 
-class argtable {
-public:
-    argtable();
-    argtable(const argtable& orig);
-    virtual ~argtable();
-    
-    size_t add_symbol(const char *symbol);
-    size_t get_argument_index(const char *symbol) const;
-    size_t get_argument_count() const;
-    const char* get_argument_name(size_t index) const;
-private:
-    std::vector<std::string> args;
-};
+namespace jitpression {
+
+    class argtable {
+    public:
+        argtable();
+        argtable(const argtable& orig);
+        virtual ~argtable();
+
+        size_t add_symbol(const char *symbol);
+        size_t get_argument_index(const char *symbol) const;
+        size_t get_argument_count() const;
+        const char* get_argument_name(size_t index) const;
+    private:
+        std::vector<std::string> args;
+    };
+
+}
 
 #endif	/* ARGTABLE_H */
 

@@ -22,6 +22,8 @@
 
 #include "tokenizer.h"
 
+using namespace jitpression;
+
 tokenizer::tokenizer(const char* input) {
     init(input, 0, strlen(input));
 }
@@ -55,17 +57,23 @@ const token tokenizer::next() {
     else if (input[input_offset] >= '0' && input[input_offset] <= '9')
         next_number();
     else if (input[input_offset] == '+')
-        next_symbol(SYMBOL_PLUS, 1);
+        next_symbol(TOKEN_TYPE_SYM_PLUS, 1);
     else if (input[input_offset] == '-')
-        next_symbol(SYMBOL_MINUS, 1);
+        next_symbol(TOKEN_TYPE_SYM_MINUS, 1);
     else if (input[input_offset] == '*')
-        next_symbol(SYMBOL_STAR, 1);
+        next_symbol(TOKEN_TYPE_SYM_STAR, 1);
     else if (input[input_offset] == '/')
-        next_symbol(SYMBOL_SLASH, 1);
+        next_symbol(TOKEN_TYPE_SYM_SLASH, 1);
+    else if (input[input_offset] == '^')
+        next_symbol(TOKEN_TYPE_SYM_POW, 1);
     else if (input[input_offset] == '(')
-        next_symbol(SYMBOL_LBR, 1);
+        next_symbol(TOKEN_TYPE_SYM_LBR, 1);
     else if (input[input_offset] == ')')
-        next_symbol(SYMBOL_RBR, 1);
+        next_symbol(TOKEN_TYPE_SYM_RBR, 1);
+    else if (input[input_offset] == '=')
+        next_symbol(TOKEN_TYPE_SYM_EQUAL, 1);
+    else if (input[input_offset] == ',')
+        next_symbol(TOKEN_TYPE_SYM_COMMA, 1);
     else
         next_identifier();
 
@@ -95,7 +103,7 @@ void tokenizer::next_octal_number() {
     }
 
     char* tmp = substring(input, input_offset, i - input_offset);
-    current_token = token(tmp, TOKEN_TYPE_NUMBER, input_offset, -1, value);
+    current_token = token(tmp, TOKEN_TYPE_NUMBER, input_offset, value);
     input_offset = i;
 }
 
@@ -115,7 +123,7 @@ void tokenizer::next_hex_number() {
     }
 
     char* tmp = substring(input, input_offset, i - input_offset);
-    current_token = token(tmp, TOKEN_TYPE_NUMBER, input_offset, -1, value);
+    current_token = token(tmp, TOKEN_TYPE_NUMBER, input_offset, value);
     input_offset = i;
 }
 
@@ -131,13 +139,13 @@ void tokenizer::next_decimal_number() {
     }
 
     char* tmp = substring(input, input_offset, i - input_offset);
-    current_token = token(tmp, TOKEN_TYPE_NUMBER, input_offset, -1, value);
+    current_token = token(tmp, TOKEN_TYPE_NUMBER, input_offset, value);
     input_offset = i;
 }
 
-void tokenizer::next_symbol(int symbol, int symbol_width) {
+void tokenizer::next_symbol(int type, int symbol_width) {
     char* tmp = substring(input, input_offset, symbol_width);
-    current_token = token(tmp, TOKEN_TYPE_SYMBOL, input_offset, symbol, 0);
+    current_token = token(tmp, type, input_offset, 0);
     input_offset += symbol_width;
 }
 
@@ -147,7 +155,11 @@ void tokenizer::next_identifier() {
         end++;
 
     char* id = substring(input, input_offset, end - input_offset);
-    current_token = token(id, input_offset);
+    if (!strcmp(id, "def"))
+        current_token = token(id, TOKEN_TYPE_KW_DEF, input_offset, 0);
+    else
+        current_token = token(id, input_offset);
+    
     input_offset = end;
 }
 
@@ -157,8 +169,11 @@ bool tokenizer::is_symbol(char c) const {
         case '-':
         case '*':
         case '/':
+        case '^':
         case '(':
         case ')':
+        case '=':
+        case ',':
             return true;
         default:
             return false;

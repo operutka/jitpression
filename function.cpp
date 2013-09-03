@@ -20,44 +20,75 @@
 #include "function.h"
 #include "parser.h"
 
+#include <cstring>
+
+using namespace jitpression;
+
 interpreter function::intp;
 
-function::function(expression& exp, int (*addr)(int*)) : exp(exp) {
+function::function(char* name, expression* exp) {
+    this->name = name;
+    this->exp = exp;
+    this->addr = NULL;
+}
+
+function::function(char* name, expression* exp, int (*addr)(int*)) {
+    this->name = name;
+    this->exp = exp;
     this->addr = addr;
 }
 
 function::function(const function& orig) : exp(orig.exp) {
+    if (orig.name)
+        this->name = copy_string(orig.name);
+    else
+        this->name = NULL;
+    
+    this->exp = orig.exp->clone();
     this->addr = orig.addr;
 }
 
 function::~function() {
+    if (name)
+        delete [] name;
+    delete exp;
 }
 
 int function::call(int* arguments) const {
     if (addr)
         return addr(arguments);
     
-    return intp.evaluate(&exp, arguments);
+    return intp.evaluate(exp, arguments);
 }
 
 const argtable* function::get_arguments() const {
-    return exp.get_arguments();
+    return exp->get_arguments();
 }
 
-function function::parse(const char* exp) {
-    expression* e = parser::parse(exp);
-    function result(*e, NULL);
-    delete e;
-    
-    return result;
+const char* function::get_name() const {
+    return name;
 }
+
+void function::compile(compiler* comp) {
+    if (!addr)
+        addr = (int(*)(int*))comp->compile(exp);
+}
+
+function* function::parse(context* c, const char* exp, bool compile) {
+    function* f = parser::parse(c, exp);
+    if (compile)
+        f->compile(c->get_compiler());
     
-function function::parse(const char* exp, compiler* comp) {
-    expression* e = parser::parse(exp);
-    int (*code)(int*) = (int(*)(int*))comp->compile(e);
+    return f;
+}
+
+char * function::copy_string(const char* str) const {
+    size_t len = strlen(str);
+    char *result = new char[len + 1];
+    if (!result)
+        throw "out of memory";  // TODO: fix this
     
-    function result(*e, code);
-    delete e;
+    strcpy(result, str);
     
     return result;
 }

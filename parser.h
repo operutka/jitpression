@@ -24,39 +24,83 @@
 
 #include "tokenizer.h"
 #include "argtable.h"
+#include "context.h"
+#include "functor.h"
 
-class expression;
-class operand;
+namespace jitpression {
 
-class parser {
-public:
-    parser(const char* exp);
-    virtual ~parser();
-    
-    expression* parse();
-    static expression* parse(const char* exp);
-private:
-    tokenizer tknzr;
-    token tkn;
-    
-    std::stack<operand*> op_stack;
-    argtable args;
-    
-    expression* result;
-    
-    void net_a();
-    void net_a2();
-    void net_a3();
-    void net_b();
-    void net_b2();
-    void net_b3();
-    void net_c();
-    void net_c2();
-    
-    void compare_symbol(int symbol);
-    int compare_number();
-    void compare_identifier();
-};
+    class expression;
+    class operand;
+
+    class parser {
+    public:
+        parser(const context* c, const char* exp);
+        virtual ~parser();
+
+        function* parse();
+        static function* parse(const context* c, const char* exp);
+    private:
+        const context* c;
+        
+        tokenizer tknzr;
+        token tkn;
+
+        std::stack<operand*> op_stack;
+        argtable args;
+        functor *fnctr;
+        size_t fnctr_arg_index;
+
+        char *name;
+        function* result;
+
+        void net_a();
+        void net_a2();
+        void net_a3();
+        void net_b();
+        void net_b2();
+        void net_b3();
+        void net_c();
+        void net_c2();
+
+        void input_def();
+        void input_def2();
+        void input_defb();
+        void input_defb2();
+        void input_as();
+        void input_as2();
+        void input_md();
+        void input_md2();
+        void input_p();
+        void input_p2();
+        void input_s();
+        void input_s2(const char *id);
+        void input_s3();
+        void input_s4();
+        void input_fb();
+        void input_fb2();
+
+        void output_inv();
+        void output_add();
+        void output_sub();
+        void output_mul();
+        void output_div();
+        void output_pow();
+        void output_number(int val);
+        void output_variable(const char *id);
+        void output_functor();
+        void output_functor_argument();
+        
+        void create_functor(const char* fid);
+
+        void op_stack_push(operand *op);
+        operand * op_stack_pop();
+
+        void compare_token(int token_type);
+
+        char * copy_string(const char *str) const;
+    };
+
+}
 
 #endif	/* PARSER_H */
 

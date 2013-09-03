@@ -19,6 +19,8 @@
 
 #include "argtable.h"
 
+using namespace jitpression;
+
 argtable::argtable() {
 }
 

@@ -22,6 +22,8 @@
 #include "operand.h"
 #include "opvisitor.h"
 
+using namespace jitpression;
+
 numoperand::numoperand(int value) {
     this->value = value;
 }

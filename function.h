@@ -25,24 +25,34 @@
 #include "argtable.h"
 #include "compiler.h"
 #include "interpreter.h"
+#include "context.h"
 
-class function {
-public:
-    function(expression& args, int (*addr)(int*));
-    function(const function& orig);
-    virtual ~function();
-    
-    int call(int* arguments) const;
-    const argtable* get_arguments() const;
-    
-    static function parse(const char* exp);
-    static function parse(const char* exp, compiler *comp);
-private:
-    static interpreter intp;
-    
-    int (*addr)(int* args);
-    expression exp;
-};
+namespace jitpression {
+
+    class function {
+    public:
+        function(char* name, expression* exp);
+        function(char* name, expression* exp, int (*addr)(int*));
+        function(const function& orig);
+        virtual ~function();
+
+        int call(int* arguments) const;
+        const argtable* get_arguments() const;
+        const char* get_name() const;
+
+        static function* parse(jitpression::context* c, const char* exp, bool compile);
+    private:
+        static interpreter intp;
+
+        int (*addr)(int* args);
+        expression* exp;
+        char* name;
+        
+        void compile(compiler* comp);
+        char * copy_string(const char *str) const;
+    };
+
+}
 
 #endif	/* FUNCTION_H */
 

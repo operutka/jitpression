@@ -17,35 +17,38 @@
  * along with Jitpression.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EXP_PRINTER_H
-#define	EXP_PRINTER_H
+#ifndef FUNCTOR_H
+#define	FUNCTOR_H
 
-#include "opvisitor.h"
+#include "operand.h"
 
-#include <cstdio>
+#include <cstdlib>
 
 namespace jitpression {
+    
+    class function;
 
-    class exp_printer : public opvisitor {
+    class functor : public operand {
     public:
-        exp_printer();
-        exp_printer(FILE* out);
+        functor(const function* f);
+        functor(const functor& orig);
+        virtual ~functor();
 
-        virtual void visit(const numoperand* op);
-        virtual void visit(const symoperand* op);
-        virtual void visit(const invop* op);
-        virtual void visit(const addop* op);
-        virtual void visit(const subop* op);
-        virtual void visit(const mulop* op);
-        virtual void visit(const divop* op);
-        virtual void visit(const functor* op);
-        virtual void visit(const expression* op);
+        virtual void visit(opvisitor* visitor) const;
+        virtual bool is_leaf() const;
+        virtual functor* clone() const;
 
+        const function* get_function() const;
+        const operand* get_argument(size_t index) const;
+        void set_argument(size_t index, operand* arg);
+        size_t get_argument_count() const;
     private:
-        FILE* stream;
+        const function* f;
+        size_t arg_count;
+        operand** args;
     };
 
 }
 
-#endif	/* EXP_PRINTER_H */
+#endif	/* FUNCTOR_H */
 

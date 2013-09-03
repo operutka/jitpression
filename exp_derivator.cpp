@@ -1,6 +1,27 @@
+/*
+ * Copyright (C) 2013 Ondrej Perutka
+ * 
+ * This file is part of Jitpression.
+ * 
+ * Jitpression is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Jitpression is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Jitpression.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "exp_derivator.h"
 
 #include <cstring>
+
+using namespace jitpression;
 
 exp_derivator::exp_derivator(const char* symbol) {
     this->symbol = symbol;
@@ -132,6 +153,10 @@ void exp_derivator::visit(const divop* op) {
         derivative = new numoperand(0);
 }
 
+void exp_derivator::visit(const functor* op) {
+    throw "not supported yet";
+}
+
 void exp_derivator::visit(const expression* op) {
     const argtable* args = op->get_arguments();
     op->get_top_operand()->visit(this);
@@ -180,6 +205,10 @@ void exp_derivator::function_checker::visit(const mulop* op) {
 void exp_derivator::function_checker::visit(const divop* op) {
     op->get_left()->visit(this);
     op->get_right()->visit(this);
+}
+
+void exp_derivator::function_checker::visit(const functor* op) {
+    throw "not supported yet";
 }
 
 void exp_derivator::function_checker::visit(const expression* op) {

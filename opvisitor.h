@@ -23,21 +23,27 @@
 #include "operand.h"
 #include "operator.h"
 #include "expression.h"
+#include "functor.h"
 
-class opvisitor {
-public:
-    virtual ~opvisitor() { }
-    
-    virtual void visit(const numoperand* op) = 0;
-    virtual void visit(const symoperand* op) = 0;
-    virtual void visit(const invop* op) = 0;
-    virtual void visit(const addop* op) = 0;
-    virtual void visit(const subop* op) = 0;
-    virtual void visit(const mulop* op) = 0;
-    virtual void visit(const divop* op) = 0;
-    
-    virtual void visit(const expression* op) = 0;
-};
+namespace jitpression {
+
+    class opvisitor {
+    public:
+        virtual ~opvisitor() { }
+
+        virtual void visit(const numoperand* op) = 0;
+        virtual void visit(const symoperand* op) = 0;
+        virtual void visit(const invop* op) = 0;
+        virtual void visit(const addop* op) = 0;
+        virtual void visit(const subop* op) = 0;
+        virtual void visit(const mulop* op) = 0;
+        virtual void visit(const divop* op) = 0;
+        virtual void visit(const functor* op) = 0;
+
+        virtual void visit(const expression* op) = 0;
+    };
+
+}
 
 #endif	/* OPVISITOR_H */
 

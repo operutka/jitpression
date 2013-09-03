@@ -20,50 +20,54 @@
 #ifndef OPERAND_H
 #define	OPERAND_H
 
-class opvisitor;
+namespace jitpression {
 
-class operand {
-public:
-    virtual ~operand() { }
-    virtual void visit(opvisitor* visitor) const = 0;
-    virtual bool is_leaf() const = 0;
-    virtual operand* clone() const = 0;
-private:
-};
+    class opvisitor;
 
-class numoperand : public operand {
-public:
-    numoperand(int value);
-    numoperand(const numoperand& orig);
-    virtual ~numoperand();
-    
-    virtual void visit(opvisitor* visitor) const;
-    virtual bool is_leaf() const;
-    virtual numoperand* clone() const;
-    int get_value() const;
-private:
-    int value;
-};
+    class operand {
+    public:
+        virtual ~operand() { }
+        virtual void visit(opvisitor* visitor) const = 0;
+        virtual bool is_leaf() const = 0;
+        virtual operand* clone() const = 0;
+    private:
+    };
 
-class symoperand : public operand {
-public:
-    symoperand(const char* symbol, int arg_index);
-    symoperand(const symoperand& orig);
-    virtual ~symoperand();
-    
-    symoperand& operator=(const symoperand& other);
-    
-    virtual void visit(opvisitor* visitor) const;
-    virtual bool is_leaf() const;
-    virtual symoperand* clone() const;
-    const char* get_symbol() const;
-    int get_argument_index() const;
-private:
-    char* symbol;
-    int arg_index;
-    
-    char* copy_string(const char* string);
-};
+    class numoperand : public operand {
+    public:
+        numoperand(int value);
+        numoperand(const numoperand& orig);
+        virtual ~numoperand();
+
+        virtual void visit(opvisitor* visitor) const;
+        virtual bool is_leaf() const;
+        virtual numoperand* clone() const;
+        int get_value() const;
+    private:
+        int value;
+    };
+
+    class symoperand : public operand {
+    public:
+        symoperand(const char* symbol, int arg_index);
+        symoperand(const symoperand& orig);
+        virtual ~symoperand();
+
+        symoperand& operator=(const symoperand& other);
+
+        virtual void visit(opvisitor* visitor) const;
+        virtual bool is_leaf() const;
+        virtual symoperand* clone() const;
+        const char* get_symbol() const;
+        int get_argument_index() const;
+    private:
+        char* symbol;
+        int arg_index;
+
+        char* copy_string(const char* string);
+    };
+
+}
 
 #endif	/* OPERAND_H */
 

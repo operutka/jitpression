@@ -20,6 +20,8 @@
 #include "operator.h"
 #include "opvisitor.h"
 
+using namespace jitpression;
+
 invop::invop(operand* inner) {
     this->inner = inner;
 }

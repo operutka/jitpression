@@ -19,31 +19,32 @@
 
 #include "token.h"
 
-token::token(const char* text, int type, size_t offset, int symbol, int value) {
-    init(text, type, offset, symbol, value);
+using namespace jitpression;
+
+token::token(const char* text, int type, size_t offset, int value) {
+    init(text, type, offset, value);
 }
 
 token::token(const char* text, size_t offset) {
-    init(text, TOKEN_TYPE_IDENTIFIER, offset, -1, 0);
+    init(text, TOKEN_TYPE_IDENTIFIER, offset, 0);
 }
 
 token::token(int offset) {
-    init("EOF", TOKEN_TYPE_EPS, offset, -1, 0);
+    init("EOF", TOKEN_TYPE_EPS, offset, 0);
 }
 
 token::token(const token& orig) {
-    init(orig.text, orig.type, orig.offset, orig.symbol, orig.value);
+    init(orig.text, orig.type, orig.offset, orig.value);
 }
 
 token::token() {
-    init(NULL, -1, -1, -1, 0);
+    init(NULL, -1, -1, 0);
 }
 
-void token::init(const char* text, int type, size_t offset, int symbol, int value) {
+void token::init(const char* text, int type, size_t offset, int value) {
     this->text = text;
     this->type = type;
     this->offset = offset;
-    this->symbol = symbol;
     this->value = value;
 }
 
@@ -57,10 +58,6 @@ int token::get_type() const {
 
 size_t token::get_offset() const {
     return offset;
-}
-
-int token::get_symbol() const {
-    return symbol;
 }
 
 int token::get_value() const {
